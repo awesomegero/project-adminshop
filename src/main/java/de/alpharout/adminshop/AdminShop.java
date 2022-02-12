@@ -4,6 +4,7 @@ import de.alpharout.adminshop.utils.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -16,10 +17,15 @@ public class AdminShop extends JavaPlugin {
     private static File messagesFile;
     private static YamlConfiguration messagesConf;
 
+    PluginManager pluginManager;
+
     @Override
     public void onEnable() {
         plugin = this;
+        pluginManager = Bukkit.getServer().getPluginManager();
 
+        // Check if dependencies are found and enabled
+        checkDependencies();
         // Initialize config files
         initFiles();
     }
@@ -44,10 +50,16 @@ public class AdminShop extends JavaPlugin {
             messagesConf.load(messagesFile);
         } catch (IOException e) {
             Log.critical("Couldn't load " + currentFileName + "!");
-            Bukkit.getServer().getPluginManager().disablePlugin(this);
+            pluginManager.disablePlugin(this);
         } catch (InvalidConfigurationException e) {
             Log.critical("Invalid YAML code in " + currentFileName + "!");
-            Bukkit.getServer().getPluginManager().disablePlugin(this);
+            pluginManager.disablePlugin(this);
+        }
+    }
+    private void checkDependencies() {
+        if (!pluginManager.isPluginEnabled("Citizens")) {
+            Log.critical("Citizens is not found or disabled! Adminshop requires Citizens.");
+            pluginManager.disablePlugin(this);
         }
     }
 

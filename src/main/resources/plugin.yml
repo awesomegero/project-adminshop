@@ -3,5 +3,8 @@ version: 0.0.1
 api-version: 1.17
 main: de.alpharout.adminshop.AdminShop
 
+softdepend:
+  - Citizens
+
 author: alphaR0ut
 website: fiverr.com/alphaR0ut
