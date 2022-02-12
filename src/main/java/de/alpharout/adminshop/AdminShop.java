@@ -15,7 +15,9 @@ public class AdminShop extends JavaPlugin {
     private static boolean debugMode;
 
     private static File messagesFile;
+    private static File databaseFile;
     private static YamlConfiguration messagesConf;
+    private static YamlConfiguration databaseConf;
 
     PluginManager pluginManager;
 
@@ -43,16 +45,24 @@ public class AdminShop extends JavaPlugin {
 
     private void initFiles() {
         messagesFile = new File(getDataFolder(), "messages.yml");
+        databaseFile = new File(getDataFolder(), "database.yml");
 
         if (!messagesFile.exists()) {
             saveResource("messages.yml", false);
         }
+        if (!databaseFile.exists()) {
+            saveResource("database.yml", false);
+        }
 
         messagesConf = new YamlConfiguration();
+        databaseConf = new YamlConfiguration();
         String currentFileName = "unspecified file";
         try {
             currentFileName = messagesFile.getName();
             messagesConf.load(messagesFile);
+
+            currentFileName = databaseFile.getName();
+            databaseConf.load(databaseFile);
         } catch (IOException e) {
             Log.critical("Couldn't load " + currentFileName + "!");
             pluginManager.disablePlugin(this);
