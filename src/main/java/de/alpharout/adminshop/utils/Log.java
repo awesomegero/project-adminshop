@@ -1,5 +1,6 @@
 package de.alpharout.adminshop.utils;
 
+import de.alpharout.adminshop.AdminShop;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -26,6 +27,8 @@ public class Log {
 
     // Used for development information and deeper analysis
     public static void debug(String msg) {
-        Bukkit.getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "Debug | " + msg);
+        if (AdminShop.isDebugMode()) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.LIGHT_PURPLE + "Debug | " + msg);
+        }
     }
 }

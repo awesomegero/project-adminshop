@@ -21,13 +21,19 @@ public class AdminShop extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // Load config.yml at first because plugin has to know if debug mode is enabled.
+        saveDefaultConfig();
+        debugMode = getConfig().getBoolean("debug-mode");
+
         plugin = this;
         pluginManager = Bukkit.getServer().getPluginManager();
 
         // Check if dependencies are found and enabled
         checkDependencies();
+        Log.debug("Checked dependencies!");
         // Initialize config files
         initFiles();
+        Log.debug("Initialized config files!");
     }
 
     @Override
@@ -38,7 +44,6 @@ public class AdminShop extends JavaPlugin {
     private void initFiles() {
         messagesFile = new File(getDataFolder(), "messages.yml");
 
-        saveDefaultConfig();
         if (!messagesFile.exists()) {
             saveResource("messages.yml", false);
         }
@@ -65,5 +70,9 @@ public class AdminShop extends JavaPlugin {
 
     public static AdminShop getInstance() {
         return plugin;
+    }
+
+    public static boolean isDebugMode() {
+        return debugMode;
     }
 }
