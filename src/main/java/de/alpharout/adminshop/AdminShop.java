@@ -5,6 +5,8 @@ import de.alpharout.adminshop.commands.AdminshopCommand;
 import de.alpharout.adminshop.commands.sub.HelpSubcommand;
 import de.alpharout.adminshop.utils.ConfigManager;
 import de.alpharout.adminshop.utils.Log;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AdminShop extends JavaPlugin {
@@ -28,6 +30,13 @@ public class AdminShop extends JavaPlugin {
 
         subcommandManager = new SubcommandManager();
         subcommandManager.registerSubcommand("help", new HelpSubcommand());
+
+        PluginManager pluginManager = Bukkit.getServer().getPluginManager();
+        if (!pluginManager.isPluginEnabled("Citizens")) {
+            Log.critical("Citizens is not enabled on this server!");
+            pluginManager.disablePlugin(this);
+            return;
+        }
 
         Log.debug("Enabled Adminshop.");
     }
