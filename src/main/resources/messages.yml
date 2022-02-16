@@ -1,5 +1,6 @@
 wrong-subcommand-output: "&cThis subcommand is not available!"
 no-perm-output: "&cYou don't have permissions to execute this!"
+no-player-output: "&cYou have to be a player to execute this!"
 help-command-output:
   - "&f&l| &r&7Overview of &cAdminshop &f&l|"
   - "&7 • /adminshop &chelp &7| Shows you this help."

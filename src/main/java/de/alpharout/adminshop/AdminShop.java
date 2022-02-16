@@ -2,6 +2,7 @@ package de.alpharout.adminshop;
 
 import de.alpharout.adminshop.api.SubcommandManager;
 import de.alpharout.adminshop.commands.AdminshopCommand;
+import de.alpharout.adminshop.commands.sub.CreateSubcommand;
 import de.alpharout.adminshop.commands.sub.HelpSubcommand;
 import de.alpharout.adminshop.utils.ConfigManager;
 import de.alpharout.adminshop.utils.Log;
@@ -31,6 +32,7 @@ public class AdminShop extends JavaPlugin {
 
         subcommandManager = new SubcommandManager();
         subcommandManager.registerSubcommand("help", new HelpSubcommand());
+        subcommandManager.registerSubcommand("create", new CreateSubcommand());
 
         PluginManager pluginManager = Bukkit.getServer().getPluginManager();
         if (!pluginManager.isPluginEnabled("Citizens")) {
