@@ -1,0 +1,6 @@
+db:
+  hostname: localhost
+  port: 3306
+  username: notroot
+  password: secure123
+  database: newDatabase
