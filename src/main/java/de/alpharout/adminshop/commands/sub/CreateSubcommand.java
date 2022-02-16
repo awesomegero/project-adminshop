@@ -26,7 +26,7 @@ public class CreateSubcommand implements Subcommand {
             sender.sendMessage(
                     ChatColor.translateAlternateColorCodes(
                             '&',
-                            AdminShop.getConfigManager().getMessagesConf().getString("no-perm-output")
+                            AdminShop.getConfigManager().getMessagesConf().getString("no-player-output")
                     )
             );
             return true;
