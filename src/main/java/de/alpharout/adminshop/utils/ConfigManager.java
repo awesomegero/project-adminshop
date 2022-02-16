@@ -43,11 +43,26 @@ public class ConfigManager {
             messagesConf.load(messagesFile);
         } catch (FileNotFoundException e) {
             Log.critical("Configuration file for " + currentLoadingConfig + " hasn't been found!");
-            return;
         } catch (IOException e) {
             Log.critical("Error while reading " + currentLoadingConfig + "!");
         } catch (InvalidConfigurationException e) {
             Log.critical("Invalid YAML code in " + currentLoadingConfig + "!");
         }
+    }
+
+    public File getDatabaseFile() {
+        return databaseFile;
+    }
+
+    public File getMessagesFile() {
+        return messagesFile;
+    }
+
+    public YamlConfiguration getMessagesConf() {
+        return messagesConf;
+    }
+
+    public YamlConfiguration getDatabaseConf() {
+        return databaseConf;
     }
 }
