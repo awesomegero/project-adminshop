@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.util.ArrayList;
 
 public class ConfigHelper {
+    // Replaces '&' with colors in a list
     public static ArrayList<String> getColoredList(YamlConfiguration config, String key) {
         ArrayList<String> rawList = (ArrayList<String>) config.getStringList(key);
 

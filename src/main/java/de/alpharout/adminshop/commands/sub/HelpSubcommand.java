@@ -10,6 +10,10 @@ import org.bukkit.command.CommandSender;
 public class HelpSubcommand implements Subcommand {
     @Override
     public boolean handleCommand(CommandSender sender, Command command, String s, String[] args) {
+        /*
+        Simple help command displaying help message from messages.yml
+         */
+
         if (!sender.hasPermission("adminshop.command.help")) {
             sender.sendMessage(
                     ChatColor.translateAlternateColorCodes(

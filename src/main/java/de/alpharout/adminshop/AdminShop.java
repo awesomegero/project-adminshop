@@ -24,16 +24,21 @@ public class AdminShop extends JavaPlugin {
         PLUGIN = this;
         debugMode = getConfig().getBoolean("debug-mode");
 
+        // Load all files and configurations
         configManager = new ConfigManager();
         configManager.loadFiles();
 
+        // Register main command and tab completer
         this.getCommand("adminshop").setExecutor(new AdminshopCommand());
         this.getCommand("adminshop").setTabCompleter(new AdminshopCommand());
 
+        // Subcommand Manager for /adminshop
         subcommandManager = new SubcommandManager();
         subcommandManager.registerSubcommand("help", new HelpSubcommand());
         subcommandManager.registerSubcommand("create", new CreateSubcommand());
 
+        // Check for Citizens
+        // TODO: Relocate code to other file
         PluginManager pluginManager = Bukkit.getServer().getPluginManager();
         if (!pluginManager.isPluginEnabled("Citizens")) {
             Log.critical("Citizens is not enabled on this server!");
