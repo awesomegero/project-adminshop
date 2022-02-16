@@ -10,3 +10,4 @@ commands:
   adminshop:
     description: Gives you the power to create adminshops.
     aliases: as
+    permission: adminshop.command

@@ -30,6 +30,10 @@ public class AdminshopCommand implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return AdminShop.getSubcommandManager().getSubcommandMap().keySet().stream().toList();
+        if (sender.hasPermission(command.getPermission())) {
+            return AdminShop.getSubcommandManager().getSubcommandMap().keySet().stream().toList();
+        } else {
+            return null;
+        }
     }
 }
