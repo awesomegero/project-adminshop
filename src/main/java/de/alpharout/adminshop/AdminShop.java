@@ -27,6 +27,7 @@ public class AdminShop extends JavaPlugin {
         configManager.loadFiles();
 
         this.getCommand("adminshop").setExecutor(new AdminshopCommand());
+        this.getCommand("adminshop").setTabCompleter(new AdminshopCommand());
 
         subcommandManager = new SubcommandManager();
         subcommandManager.registerSubcommand("help", new HelpSubcommand());
