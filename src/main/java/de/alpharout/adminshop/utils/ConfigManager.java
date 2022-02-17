@@ -11,16 +11,15 @@ import java.io.IOException;
 public class ConfigManager {
     private File databaseFile;
     private File messagesFile;
+    private File traderFile;
     private YamlConfiguration databaseConf;
     private YamlConfiguration messagesConf;
-
-    public ConfigManager() {
-
-    }
+    private YamlConfiguration traderConf;
 
     public void loadFiles() {
         databaseFile = new File(AdminShop.getInstance().getDataFolder(), "database.yml");
         messagesFile = new File(AdminShop.getInstance().getDataFolder(), "messages.yml");
+        traderFile = new File(AdminShop.getInstance().getDataFolder(), "trader.yml");
 
         if (!databaseFile.exists()) {
             AdminShop.getInstance().saveResource("database.yml", false);
@@ -30,17 +29,25 @@ public class ConfigManager {
             AdminShop.getInstance().saveResource("messages.yml", false);
             Log.debug("Created messages.yml file.");
         }
+        if (!traderFile.exists()) {
+            AdminShop.getInstance().saveResource("trader.yml", false);
+            Log.debug("Created trader.yml file.");
+        }
 
         String currentLoadingConfig = "unknown";
         try {
             databaseConf = new YamlConfiguration();
             messagesConf = new YamlConfiguration();
+            traderConf = new YamlConfiguration();
 
             currentLoadingConfig = databaseFile.getName();
             databaseConf.load(databaseFile);
 
             currentLoadingConfig = messagesFile.getName();
             messagesConf.load(messagesFile);
+
+            currentLoadingConfig = traderFile.getName();
+            traderConf.load(traderFile);
         } catch (FileNotFoundException e) {
             Log.critical("Configuration file for " + currentLoadingConfig + " hasn't been found!");
         } catch (IOException e) {
@@ -58,11 +65,19 @@ public class ConfigManager {
         return messagesFile;
     }
 
+    public File getTraderFile() {
+        return traderFile;
+    }
+
     public YamlConfiguration getMessagesConf() {
         return messagesConf;
     }
 
     public YamlConfiguration getDatabaseConf() {
         return databaseConf;
+    }
+
+    public YamlConfiguration getTraderConf() {
+        return traderConf;
     }
 }

@@ -1,6 +1,7 @@
 package de.alpharout.adminshop;
 
 import de.alpharout.adminshop.api.SubcommandManager;
+import de.alpharout.adminshop.api.Trader;
 import de.alpharout.adminshop.commands.AdminshopCommand;
 import de.alpharout.adminshop.commands.sub.CreateSubcommand;
 import de.alpharout.adminshop.commands.sub.HelpSubcommand;
@@ -45,6 +46,9 @@ public class AdminShop extends JavaPlugin {
             pluginManager.disablePlugin(this);
             return;
         }
+
+        Log.debug("Loading Trader List.");
+        Trader.loadTraderList();
 
         Log.debug("Enabled Adminshop.");
     }
