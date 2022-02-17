@@ -47,6 +47,7 @@ public class AdminShop extends JavaPlugin {
             return;
         }
 
+        // Loading all traders from the trader.yml file
         Log.debug("Loading Trader List.");
         Trader.loadTraderList();
 

@@ -5,6 +5,10 @@ public class SkinInformation {
     private String textureSignature;
     private String textureValue;
 
+    /*
+    These three values are necesary to load a skin from mineskin.org.
+    Citizens supports them natively.
+     */
     public SkinInformation(String skinName, String textureSignature, String textureValue) {
         this.skinName = skinName;
         this.textureSignature = textureSignature;

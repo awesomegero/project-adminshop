@@ -11,6 +11,7 @@ import java.util.Set;
 public class Trader {
     private static ArrayList<Trader> traderList = new ArrayList<>();
 
+    // Loading all traders from the trader.yml into memory (Deserialisation)
     public static void loadTraderList() {
         Set<String> traderNames = AdminShop.getConfigManager().getTraderConf().getConfigurationSection("").getKeys(false);
 
