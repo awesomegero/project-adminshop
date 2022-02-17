@@ -1,6 +1,8 @@
 wrong-subcommand-output: "&cThis subcommand is not available!"
 no-perm-output: "&cYou don't have permissions to execute this!"
 no-player-output: "&cYou have to be a player to execute this!"
+enter-display-name-output: "&7Please enter the &cdisplay name &7of the trader."
+enter-skin-output: "&7Please enter the &skin&7 of the trader."
 help-command-output:
   - "&f&l| &r&7Overview of &cAdminshop &f&l|"
   - "&7 • /adminshop &chelp &7| Shows you this help."
