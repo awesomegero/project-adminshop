@@ -20,9 +20,9 @@ public class AdminShop extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        saveDefaultConfig();
-
         PLUGIN = this;
+
+        saveDefaultConfig();
         debugMode = getConfig().getBoolean("debug-mode");
 
         // Load all files and configurations

@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class SubcommandManager {
     // All subcommands with the argument they belong to (e.g. /adminshop test, where test is the argument)
-    private HashMap<String, Subcommand> subcommandMap;
+    private final HashMap<String, Subcommand> subcommandMap;
 
     public SubcommandManager() {
         subcommandMap = new HashMap<>();

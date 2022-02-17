@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class Trader {
-    private static ArrayList<Trader> traderList = new ArrayList<>();
+    private static final ArrayList<Trader> traderList = new ArrayList<>();
 
     // Loading all traders from the trader.yml into memory (Deserialisation)
     public static void loadTraderList() {
@@ -35,10 +35,10 @@ public class Trader {
         return traderList;
     }
 
-    private int npcId;
-    private String internalName;
-    private String displayName;
-    private SkinInformation skinInformation;
+    private final int npcId;
+    private final String internalName;
+    private final String displayName;
+    private final SkinInformation skinInformation;
 
     public Trader(int npcId, String internalName, String displayName, SkinInformation skinInformation) {
         this.npcId = npcId;

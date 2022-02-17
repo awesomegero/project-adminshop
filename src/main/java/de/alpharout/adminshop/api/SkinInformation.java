@@ -1,9 +1,9 @@
 package de.alpharout.adminshop.api;
 
 public class SkinInformation {
-    private String skinName;
-    private String textureSignature;
-    private String textureValue;
+    private final String skinName;
+    private final String textureSignature;
+    private final String textureValue;
 
     /*
     These three values are necesary to load a skin from mineskin.org.
