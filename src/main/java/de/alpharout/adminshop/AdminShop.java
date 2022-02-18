@@ -6,6 +6,7 @@ import de.alpharout.adminshop.commands.AdminshopCommand;
 import de.alpharout.adminshop.commands.sub.CreateSubcommand;
 import de.alpharout.adminshop.commands.sub.HelpSubcommand;
 import de.alpharout.adminshop.utils.ConfigManager;
+import de.alpharout.adminshop.utils.DatabaseManager;
 import de.alpharout.adminshop.utils.Log;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
@@ -17,6 +18,7 @@ public class AdminShop extends JavaPlugin {
 
     private static ConfigManager configManager;
     private static SubcommandManager subcommandManager;
+    private static DatabaseManager databaseManager;
 
     @Override
     public void onEnable() {
@@ -28,6 +30,10 @@ public class AdminShop extends JavaPlugin {
         // Load all files and configurations
         configManager = new ConfigManager();
         configManager.loadFiles();
+
+        // Connect to database
+        databaseManager = new DatabaseManager();
+        databaseManager.loadDatabase();
 
         // Register main command and tab completer
         this.getCommand("adminshop").setExecutor(new AdminshopCommand());
