@@ -44,10 +44,8 @@ public class SkinInformation {
 
             return new SkinInformation(uuid, signature, textureEncoded);
         } catch (IOException | ParseException e) {
-            e.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 
     private final String skinName;

@@ -3,8 +3,11 @@ package de.alpharout.adminshop.commands.sub;
 import de.alpharout.adminshop.AdminShop;
 import de.alpharout.adminshop.api.SkinInformation;
 import de.alpharout.adminshop.api.Subcommand;
+import de.alpharout.adminshop.api.Trader;
 import de.alpharout.adminshop.utils.CreateTraderOptions;
-import de.alpharout.adminshop.utils.Log;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.trait.SkinTrait;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,6 +16,7 @@ import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 public class CreateSubcommand implements Subcommand {
@@ -44,7 +48,20 @@ public class CreateSubcommand implements Subcommand {
         Player player = (Player) sender;
         CreateTraderOptions createTraderOptions = new CreateTraderOptions();
 
-        // TODO: Add real logic
+        if (args.length != 2) {
+            player.sendMessage(
+                    ChatColor.translateAlternateColorCodes(
+                            '&',
+                            AdminShop.getConfigManager().getMessagesConf().getString("missing-trader-name-output")
+                    )
+            );
+            return true;
+        }
+
+        String traderInternalName = args[1];
+        createTraderOptions.setInternalName(traderInternalName);
+
+        // TODO: Add text input validation
         Prompt skinLinkPrompt = new StringPrompt() {
             @Override
             public String getPromptText(ConversationContext context) {
@@ -57,7 +74,13 @@ public class CreateSubcommand implements Subcommand {
             @Override
             public Prompt acceptInput(ConversationContext context, String input) {
                 createTraderOptions.setSkinUrl(input);
-                processInputs(createTraderOptions);
+                player.sendMessage(
+                        ChatColor.translateAlternateColorCodes(
+                                '&',
+                                AdminShop.getConfigManager().getMessagesConf().getString("creating-trader-output")
+                        )
+                );
+                processInputs(player, createTraderOptions);
 
                 return null;
             }
@@ -87,21 +110,50 @@ public class CreateSubcommand implements Subcommand {
         return true;
     }
 
-    void processInputs(CreateTraderOptions createTraderOptions) {
+    void processInputs(Player player, CreateTraderOptions createTraderOptions) {
         Bukkit.getScheduler().runTaskAsynchronously(AdminShop.getInstance(), new Runnable() {
             @Override
             public void run() {
+                String invalidSkinUrl = ChatColor.translateAlternateColorCodes(
+                        '&',
+                        AdminShop.getConfigManager().getMessagesConf().getString("invalid-skin-url-output")
+                );
+
                 if (createTraderOptions.getSkinUrl() == null) {
-                    Log.debug("Skin URL is null!");
+                    player.sendMessage(invalidSkinUrl);
                     return;
                 }
-                Log.debug("Skin URL: " + createTraderOptions.getSkinUrl());
                 SkinInformation skinInformation = SkinInformation.loadFromURL(createTraderOptions.getSkinUrl());
                 if (skinInformation == null) {
-                    Log.debug("Skin Information is null!");
-                } else {
-                    Log.debug(skinInformation.getTextureValue());
+                    player.sendMessage(invalidSkinUrl);
+                    return;
                 }
+
+                Bukkit.getScheduler().runTask(AdminShop.getInstance(), new Runnable() {
+                    @Override
+                    public void run() {
+                        NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, createTraderOptions.getDisplayName());
+                        int npcId = npc.getId();
+
+                        Trader trader = new Trader(npcId, createTraderOptions.getInternalName(), createTraderOptions.getDisplayName(), skinInformation);
+                        Trader.addTraderToList(trader);
+                        trader.saveToConfig();
+
+                        npc.getOrAddTrait(SkinTrait.class).setSkinPersistent(
+                                skinInformation.getSkinName(),
+                                skinInformation.getTextureSignature(),
+                                skinInformation.getTextureValue()
+                        );
+                        npc.spawn(player.getLocation());
+                    }
+                });
+
+                player.sendMessage(
+                        ChatColor.translateAlternateColorCodes(
+                                '&',
+                                AdminShop.getConfigManager().getMessagesConf().getString("created-trader-output")
+                        )
+                );
             }
         });
     }

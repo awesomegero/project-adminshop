@@ -5,6 +5,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.ChatColor;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -35,6 +36,10 @@ public class Trader {
         return traderList;
     }
 
+    public static void addTraderToList(Trader trader) {
+        traderList.add(trader);
+    }
+
     private final int npcId;
     private final String internalName;
     private final String displayName;
@@ -45,6 +50,20 @@ public class Trader {
         this.internalName = internalName;
         this.displayName = displayName;
         this.skinInformation = skinInformation;
+    }
+
+    public void saveToConfig() {
+        AdminShop.getConfigManager().getTraderConf().set(internalName + ".npcId", npcId);
+        AdminShop.getConfigManager().getTraderConf().set(internalName + ".displayName", displayName);
+        AdminShop.getConfigManager().getTraderConf().set(internalName + ".skin.name", skinInformation.getSkinName());
+        AdminShop.getConfigManager().getTraderConf().set(internalName + ".skin.signature", skinInformation.getTextureSignature());
+        AdminShop.getConfigManager().getTraderConf().set(internalName + ".skin.value", skinInformation.getTextureValue());
+
+        try {
+            AdminShop.getConfigManager().getTraderConf().save(AdminShop.getConfigManager().getTraderFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getDisplayName() {

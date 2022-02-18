@@ -1,11 +1,16 @@
 package de.alpharout.adminshop.utils;
 
 public class CreateTraderOptions {
+    private String internalName;
     private String displayName;
     private String skinUrl;
 
     public CreateTraderOptions() {
 
+    }
+
+    public void setInternalName(String internalName) {
+        this.internalName = internalName;
     }
 
     public void setDisplayName(String displayName) {
@@ -22,5 +27,9 @@ public class CreateTraderOptions {
 
     public String getSkinUrl() {
         return skinUrl;
+    }
+
+    public String getInternalName() {
+        return internalName;
     }
 }
