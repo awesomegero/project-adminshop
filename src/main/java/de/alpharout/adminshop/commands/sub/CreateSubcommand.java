@@ -1,8 +1,11 @@
 package de.alpharout.adminshop.commands.sub;
 
 import de.alpharout.adminshop.AdminShop;
+import de.alpharout.adminshop.api.SkinInformation;
 import de.alpharout.adminshop.api.Subcommand;
 import de.alpharout.adminshop.utils.CreateTraderOptions;
+import de.alpharout.adminshop.utils.Log;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -53,6 +56,9 @@ public class CreateSubcommand implements Subcommand {
 
             @Override
             public Prompt acceptInput(ConversationContext context, String input) {
+                createTraderOptions.setSkinUrl(input);
+                processInputs(createTraderOptions);
+
                 return null;
             }
         };
@@ -68,7 +74,7 @@ public class CreateSubcommand implements Subcommand {
 
             @Override
             public Prompt acceptInput(ConversationContext context, String input) {
-                createTraderOptions.setSkinUrl(input);
+                createTraderOptions.setDisplayName(input);
                 return skinLinkPrompt;
             }
         };
@@ -79,5 +85,24 @@ public class CreateSubcommand implements Subcommand {
                 .withFirstPrompt(displayNamePrompt);
         conversationFactory.buildConversation(player).begin();
         return true;
+    }
+
+    void processInputs(CreateTraderOptions createTraderOptions) {
+        Bukkit.getScheduler().runTaskAsynchronously(AdminShop.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                if (createTraderOptions.getSkinUrl() == null) {
+                    Log.debug("Skin URL is null!");
+                    return;
+                }
+                Log.debug("Skin URL: " + createTraderOptions.getSkinUrl());
+                SkinInformation skinInformation = SkinInformation.loadFromURL(createTraderOptions.getSkinUrl());
+                if (skinInformation == null) {
+                    Log.debug("Skin Information is null!");
+                } else {
+                    Log.debug(skinInformation.getTextureValue());
+                }
+            }
+        });
     }
 }

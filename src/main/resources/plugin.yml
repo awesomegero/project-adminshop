@@ -11,3 +11,6 @@ commands:
     description: Gives you the power to create adminshops.
     aliases: as
     permission: adminshop.command
+
+libraries:
+  - com.googlecode.json-simple:json-simple:1.1.1
