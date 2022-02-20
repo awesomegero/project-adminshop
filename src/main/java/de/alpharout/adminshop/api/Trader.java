@@ -21,12 +21,11 @@ public class Trader {
 
     private static final ArrayList<Trader> traderList = new ArrayList<>();
 
-    // Loading all traders from the trader.yml into memory (Deserialisation)
     public static void loadTraderList() {
         try {
             PreparedStatement preparedStatement = AdminShop.getDatabaseManager().getConnection().prepareStatement(
                     "SELECT NpcUUID, InternalName, DisplayName, SkinName, SkinSignature, SkinTexture " +
-                            "FROM adminshop_traders"
+                            "FROM adminshop_traders;"
             );
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -57,12 +56,14 @@ public class Trader {
     private final String internalName;
     private final String displayName;
     private final SkinInformation skinInformation;
+    private ArrayList<Product> productList;
 
     public Trader(UUID npcUUID, String internalName, String displayName, SkinInformation skinInformation) {
         this.npcUUID = npcUUID;
         this.internalName = internalName;
         this.displayName = displayName;
         this.skinInformation = skinInformation;
+        this.productList = new ArrayList<>();
     }
 
     @Deprecated
@@ -102,6 +103,10 @@ public class Trader {
                 }
             }
         });
+    }
+
+    public void addProduct(Product product) {
+        productList.add(product);
     }
 
     public String getDisplayName() {
