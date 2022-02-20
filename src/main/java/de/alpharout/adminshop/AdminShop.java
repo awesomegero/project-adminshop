@@ -1,11 +1,11 @@
 package de.alpharout.adminshop;
 
 import de.alpharout.adminshop.api.SubcommandManager;
-import de.alpharout.adminshop.api.Trader;
 import de.alpharout.adminshop.commands.AdminshopCommand;
 import de.alpharout.adminshop.commands.sub.CreateSubcommand;
 import de.alpharout.adminshop.commands.sub.HelpSubcommand;
 import de.alpharout.adminshop.commands.sub.ListSubcommand;
+import de.alpharout.adminshop.listener.NPCRightClickListener;
 import de.alpharout.adminshop.utils.ConfigManager;
 import de.alpharout.adminshop.utils.DatabaseManager;
 import de.alpharout.adminshop.utils.Log;
@@ -60,7 +60,7 @@ public class AdminShop extends JavaPlugin {
             return;
         }
 
-
+        pluginManager.registerEvents(new NPCRightClickListener(), this);
 
         Log.debug("Enabled Adminshop.");
     }

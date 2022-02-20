@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.hikari.pool.HikariPool;
 import de.alpharout.adminshop.AdminShop;
+import de.alpharout.adminshop.api.Product;
 import de.alpharout.adminshop.api.Trader;
 
 import java.sql.Connection;
@@ -47,9 +48,10 @@ public class DatabaseManager {
     }
 
     public void setupDatabase() {
-        PreparedStatement preparedStatement = null;
+        PreparedStatement traderTableStatement;
+        PreparedStatement productTableStatement;
         try {
-            preparedStatement = getConnection().prepareStatement(
+            traderTableStatement = getConnection().prepareStatement(
                     "CREATE TABLE IF NOT EXISTS adminshop_traders (" +
                             "NpcUUID varchar(255)," +
                             "InternalName varchar(255)," +
@@ -59,19 +61,27 @@ public class DatabaseManager {
                             "SkinTexture varchar(1024)" +
                             ");"
             );
-            preparedStatement.executeUpdate();
+            productTableStatement = getConnection().prepareStatement(
+                    "CREATE TABLE IF NOT EXISTS adminshop_products (" +
+                            "InternalName varchar(255)," +
+                            "DisplayName varchar(255)," +
+                            "MaterialName varchar(255)," +
+                            "MaterialAmount int(255)," +
+                            "Price double(64, 10)," +
+                            "TraderName varchar(255)," +
+                            "BuyLimit int(255)" +
+                            ");"
+            );
+            traderTableStatement.executeUpdate();
+            productTableStatement.executeUpdate();
         } catch (SQLException e) {
             Log.critical("Error executing create table statement!");
 
             e.printStackTrace();
         }
 
-        loadTrader();
-    }
-
-    public void loadTrader() {
-        Log.debug("Loading Trader List.");
         Trader.loadTraderList();
+        Product.loadProductList();
     }
 
     public Connection getConnection()  {

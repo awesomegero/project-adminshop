@@ -5,8 +5,12 @@ import de.alpharout.adminshop.api.SkinInformation;
 import de.alpharout.adminshop.api.Subcommand;
 import de.alpharout.adminshop.api.Trader;
 import de.alpharout.adminshop.utils.CreateTraderOptions;
+import de.alpharout.adminshop.utils.Log;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCDataStore;
+import net.citizensnpcs.api.npc.NPCRegistry;
+import net.citizensnpcs.npc.CitizensNPCRegistry;
 import net.citizensnpcs.trait.SkinTrait;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -135,11 +139,9 @@ public class CreateSubcommand implements Subcommand {
                     @Override
                     public void run() {
                         NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, createTraderOptions.getDisplayName());
-                        int npcId = npc.getId();
 
-                        Trader trader = new Trader(UUID.randomUUID(), createTraderOptions.getInternalName(), createTraderOptions.getDisplayName(), skinInformation);
+                        Trader trader = new Trader(npc.getUniqueId(), createTraderOptions.getInternalName(), createTraderOptions.getDisplayName(), skinInformation);
                         Trader.addTraderToList(trader);
-                        trader.saveToConfig();
                         trader.saveToDatabase();
 
                         npc.getOrAddTrait(SkinTrait.class).setSkinPersistent(
