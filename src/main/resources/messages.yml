@@ -7,6 +7,7 @@ missing-trader-name-output: "&cYou didn't entered a trader name. Please use /adm
 created-trader-output: "&7You &acreated&7 a trader!"
 creating-trader-output: "&7Creating trader..."
 invalid-skin-url-output: "&cThe skin url you entered is invalid!"
+list-trader-output: "&7&l| &r&7List of &cTrader &7&l|"
 help-command-output:
   - "&7&l| &r&7Overview of &cAdminshop &7&l|"
   - "&7 • /adminshop &chelp &7| Shows you this help."

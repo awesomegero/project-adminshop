@@ -5,6 +5,7 @@ import de.alpharout.adminshop.api.Trader;
 import de.alpharout.adminshop.commands.AdminshopCommand;
 import de.alpharout.adminshop.commands.sub.CreateSubcommand;
 import de.alpharout.adminshop.commands.sub.HelpSubcommand;
+import de.alpharout.adminshop.commands.sub.ListSubcommand;
 import de.alpharout.adminshop.utils.ConfigManager;
 import de.alpharout.adminshop.utils.DatabaseManager;
 import de.alpharout.adminshop.utils.Log;
@@ -33,7 +34,12 @@ public class AdminShop extends JavaPlugin {
 
         // Connect to database
         databaseManager = new DatabaseManager();
-        databaseManager.loadDatabase();
+        Bukkit.getScheduler().runTaskAsynchronously(this, new Runnable() {
+            @Override
+            public void run() {
+                databaseManager.loadDatabase();
+            }
+        });
 
         // Register main command and tab completer
         this.getCommand("adminshop").setExecutor(new AdminshopCommand());
@@ -43,6 +49,7 @@ public class AdminShop extends JavaPlugin {
         subcommandManager = new SubcommandManager();
         subcommandManager.registerSubcommand("help", new HelpSubcommand());
         subcommandManager.registerSubcommand("create", new CreateSubcommand());
+        subcommandManager.registerSubcommand("list", new ListSubcommand());
 
         // Check for Citizens
         // TODO: Relocate code to other file
@@ -53,9 +60,7 @@ public class AdminShop extends JavaPlugin {
             return;
         }
 
-        // Loading all traders from the trader.yml file
-        Log.debug("Loading Trader List.");
-        Trader.loadTraderList();
+
 
         Log.debug("Enabled Adminshop.");
     }
@@ -66,6 +71,10 @@ public class AdminShop extends JavaPlugin {
 
     public static ConfigManager getConfigManager() {
         return configManager;
+    }
+
+    public static DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 
     public static SubcommandManager getSubcommandManager() {

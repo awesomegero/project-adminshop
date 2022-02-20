@@ -19,6 +19,8 @@ import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class CreateSubcommand implements Subcommand {
     @Override
     public boolean handleCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -135,9 +137,10 @@ public class CreateSubcommand implements Subcommand {
                         NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, createTraderOptions.getDisplayName());
                         int npcId = npc.getId();
 
-                        Trader trader = new Trader(npcId, createTraderOptions.getInternalName(), createTraderOptions.getDisplayName(), skinInformation);
+                        Trader trader = new Trader(UUID.randomUUID(), createTraderOptions.getInternalName(), createTraderOptions.getDisplayName(), skinInformation);
                         Trader.addTraderToList(trader);
                         trader.saveToConfig();
+                        trader.saveToDatabase();
 
                         npc.getOrAddTrait(SkinTrait.class).setSkinPersistent(
                                 skinInformation.getSkinName(),

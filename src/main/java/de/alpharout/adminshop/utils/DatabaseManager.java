@@ -2,7 +2,9 @@ package de.alpharout.adminshop.utils;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.pool.HikariPool;
 import de.alpharout.adminshop.AdminShop;
+import de.alpharout.adminshop.api.Trader;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,10 +37,48 @@ public class DatabaseManager {
         hikariConfig.addDataSourceProperty("prepStmtCacheSize", 250);
         hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
 
-        hikariDataSource = new HikariDataSource(hikariConfig);
+        // TODO: Improve error handling
+        try {
+            hikariDataSource = new HikariDataSource(hikariConfig);
+            setupDatabase();
+        } catch (HikariPool.PoolInitializationException exception ) {
+            Log.error("Error connecting to database!");
+        }
     }
 
-    public Connection getConnection() throws SQLException {
-        return hikariDataSource.getConnection();
+    public void setupDatabase() {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = getConnection().prepareStatement(
+                    "CREATE TABLE IF NOT EXISTS adminshop_traders (" +
+                            "NpcUUID varchar(255)," +
+                            "InternalName varchar(255)," +
+                            "DisplayName varchar(255)," +
+                            "SkinName varchar(255)," +
+                            "SkinSignature varchar(1024)," +
+                            "SkinTexture varchar(1024)" +
+                            ");"
+            );
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            Log.critical("Error executing create table statement!");
+
+            e.printStackTrace();
+        }
+
+        loadTrader();
+    }
+
+    public void loadTrader() {
+        Log.debug("Loading Trader List.");
+        Trader.loadTraderList();
+    }
+
+    public Connection getConnection()  {
+        try {
+            return hikariDataSource.getConnection();
+        } catch (SQLException e) {
+            return null;
+        }
     }
 }
