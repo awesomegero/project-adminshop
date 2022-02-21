@@ -4,6 +4,7 @@ import de.alpharout.adminshop.AdminShop;
 import de.alpharout.adminshop.api.gui.ItemComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -29,7 +30,7 @@ public class BuyComponent extends ItemComponent {
     }
 
     @Override
-    public void handleClick() {
-        super.handleClick();
+    public void handleClick(InventoryClickEvent clickEvent) {
+        clickEvent.setCancelled(true);
     }
 }

@@ -4,14 +4,12 @@ import de.alpharout.adminshop.AdminShop;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.UUID;
 
 public class Trader {
@@ -57,6 +55,7 @@ public class Trader {
     private final String displayName;
     private final SkinInformation skinInformation;
     private ArrayList<Product> productList;
+    ArrayList<Product[]> productPages;
 
     public Trader(UUID npcUUID, String internalName, String displayName, SkinInformation skinInformation) {
         this.npcUUID = npcUUID;
@@ -64,6 +63,7 @@ public class Trader {
         this.displayName = displayName;
         this.skinInformation = skinInformation;
         this.productList = new ArrayList<>();
+        this.productPages = new ArrayList<>();
     }
 
     @Deprecated
@@ -107,6 +107,18 @@ public class Trader {
 
     public void addProduct(Product product) {
         productList.add(product);
+    }
+
+    public void loadPages() {
+        ArrayList<Product> currentPage = new ArrayList<>();
+        for (Product product : productList) {
+            if (currentPage.size() > 15) {
+                productPages.add(currentPage.toArray(new Product[0]));
+                currentPage = new ArrayList<>();
+            }
+
+            currentPage.add(product);
+        }
     }
 
     public String getDisplayName() {

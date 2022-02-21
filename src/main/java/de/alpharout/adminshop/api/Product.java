@@ -53,6 +53,10 @@ public class Product {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        for (Trader trader : Trader.getTraderList()) {
+            trader.loadPages();
+        }
     }
 
     private String internalName;

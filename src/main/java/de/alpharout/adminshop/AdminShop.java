@@ -1,10 +1,13 @@
 package de.alpharout.adminshop;
 
 import de.alpharout.adminshop.api.SubcommandManager;
+import de.alpharout.adminshop.api.gui.ItemComponent;
+import de.alpharout.adminshop.api.gui.ViewComponent;
 import de.alpharout.adminshop.commands.AdminshopCommand;
 import de.alpharout.adminshop.commands.sub.CreateSubcommand;
 import de.alpharout.adminshop.commands.sub.HelpSubcommand;
 import de.alpharout.adminshop.commands.sub.ListSubcommand;
+import de.alpharout.adminshop.listener.InventoryClickListener;
 import de.alpharout.adminshop.listener.NPCRightClickListener;
 import de.alpharout.adminshop.utils.ConfigManager;
 import de.alpharout.adminshop.utils.DatabaseManager;
@@ -60,7 +63,14 @@ public class AdminShop extends JavaPlugin {
             return;
         }
 
+        pluginManager.registerEvents(new InventoryClickListener(), this);
         pluginManager.registerEvents(new NPCRightClickListener(), this);
+
+        ItemComponent.addStandardComponents();
+        Log.debug("Added standard components.");
+
+        ViewComponent.addStandardViewComponents();
+        Log.debug("Added standard view components.");
 
         Log.debug("Enabled Adminshop.");
     }

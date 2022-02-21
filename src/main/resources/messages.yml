@@ -12,6 +12,7 @@ buy-component-material: "GOLD_NUGGET"
 buy-component-name: "&7» &aBuy Items"
 sell-component-material: "NETHER_WARTS"
 sell-component-name: "&7» &cSell Items"
+overview-view-component-name: "&7» &aOverview"
 help-command-output:
   - "&7&l| &r&7Overview of &cAdminshop &7&l|"
   - "&7 • /adminshop &chelp &7| Shows you this help."
