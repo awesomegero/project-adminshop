@@ -10,7 +10,7 @@ invalid-skin-url-output: "&cThe skin url you entered is invalid!"
 list-trader-output: "&7&l| &r&7List of &cTrader &7&l|"
 buy-component-material: "GOLD_NUGGET"
 buy-component-name: "&7» &aBuy Items"
-sell-component-material: "NETHER_WARTS"
+sell-component-material: NETHER_WART
 sell-component-name: "&7» &cSell Items"
 overview-view-component-name: "&7» &aOverview"
 help-command-output:

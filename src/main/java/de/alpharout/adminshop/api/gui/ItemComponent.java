@@ -1,6 +1,8 @@
 package de.alpharout.adminshop.api.gui;
 
+import de.alpharout.adminshop.api.Trader;
 import de.alpharout.adminshop.gui.BuyComponent;
+import de.alpharout.adminshop.gui.SellComponent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,6 +17,7 @@ public class ItemComponent {
 
     public static void addStandardComponents() {
         itemComponentList.add(new BuyComponent());
+        itemComponentList.add(new SellComponent());
     }
 
     public static void addItemComponent(ItemComponent itemComponent) {
@@ -25,7 +28,7 @@ public class ItemComponent {
         return null;
     }
 
-    public void handleClick(InventoryClickEvent clickEvent) {
+    public void handleClick(InventoryClickEvent clickEvent, Trader trader) {
 
     }
 }

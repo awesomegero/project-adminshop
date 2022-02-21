@@ -2,8 +2,10 @@ package de.alpharout.adminshop.api;
 
 import de.alpharout.adminshop.AdminShop;
 import de.alpharout.adminshop.utils.Log;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class Product {
     private static ArrayList<Product> productList = new ArrayList<>();
@@ -45,9 +46,18 @@ public class Product {
 
                 Material material = Material.getMaterial(materialName);
                 ItemStack itemStack = new ItemStack(material);
+                ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes(
+                        '&',
+                        displayName
+                ));
+                itemStack.setItemMeta(itemMeta);
                 itemStack.setAmount(materialAmount);
 
-                trader.addProduct(new Product(internalName, displayName, itemStack, price, buyLimit));
+                Product product = new Product(internalName, displayName, itemStack, price, buyLimit);
+                trader.addProduct(product);
+                productList.add(product);
+
                 Log.debug("Added product " + internalName + " to " + traderName);
             }
         } catch (SQLException e) {
@@ -63,6 +73,7 @@ public class Product {
     private String displayName;
     private ItemStack itemStack;
     private double price;
+    private int currentlySold;
     private int buyLimit;
 
     public Product(String internalName, String displayName, ItemStack itemStack, double price, int buyLimit) {
@@ -71,6 +82,7 @@ public class Product {
         this.itemStack = itemStack;
         this.price = price;
         this.buyLimit = buyLimit;
+        currentlySold = 0;
     }
 
     public String getInternalName() {
@@ -87,5 +99,17 @@ public class Product {
 
     public double getPrice() {
         return price;
+    }
+
+    public int getBuyLimit() {
+        return buyLimit;
+    }
+
+    public int getCurrentlySold() {
+        return currentlySold;
+    }
+
+    public void addSell() {
+        currentlySold++;
     }
 }

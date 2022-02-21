@@ -1,6 +1,8 @@
 package de.alpharout.adminshop.api;
 
 import de.alpharout.adminshop.AdminShop;
+import de.alpharout.adminshop.gui.OverviewViewComponent;
+import de.alpharout.adminshop.utils.Log;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
@@ -55,7 +57,7 @@ public class Trader {
     private final String displayName;
     private final SkinInformation skinInformation;
     private ArrayList<Product> productList;
-    ArrayList<Product[]> productPages;
+    private ArrayList<Product[]> productPages;
 
     public Trader(UUID npcUUID, String internalName, String displayName, SkinInformation skinInformation) {
         this.npcUUID = npcUUID;
@@ -111,14 +113,18 @@ public class Trader {
 
     public void loadPages() {
         ArrayList<Product> currentPage = new ArrayList<>();
+        Log.debug("Product list size: " + productList.size());
         for (Product product : productList) {
             if (currentPage.size() > 15) {
+                Log.debug("Creating new page");
                 productPages.add(currentPage.toArray(new Product[0]));
                 currentPage = new ArrayList<>();
             }
 
             currentPage.add(product);
         }
+
+        productPages.add(currentPage.toArray(new Product[0]));
     }
 
     public String getDisplayName() {
@@ -135,6 +141,10 @@ public class Trader {
 
     public UUID getNpcUUID() {
         return npcUUID;
+    }
+
+    public ArrayList<Product[]> getProductPages() {
+        return productPages;
     }
 
     public NPC getNpc() {

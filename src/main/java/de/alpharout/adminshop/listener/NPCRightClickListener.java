@@ -24,7 +24,7 @@ public class NPCRightClickListener implements Listener {
             Log.debug("Clicked on registered NPC " + trader.getInternalName());
 
             // TODO: Add real logic
-            clickEvent.getClicker().openInventory(new OverviewViewComponent().getFilledInventory(trader));
+            clickEvent.getClicker().openInventory(new OverviewViewComponent(trader).getFilledInventory());
         } catch (NoSuchElementException nsee) {
             Log.debug("Wrong UUID (" + clickEvent.getNPC().getUniqueId() + ")");
         }

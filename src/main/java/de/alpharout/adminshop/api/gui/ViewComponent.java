@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ViewComponent {
     private static ArrayList<ViewComponent> viewComponentList = new ArrayList<>();
@@ -22,19 +23,24 @@ public class ViewComponent {
     }
 
     public static void addStandardViewComponents() {
-        OverviewViewComponent overviewViewComponent = new OverviewViewComponent();
+        OverviewViewComponent overviewViewComponent = new OverviewViewComponent(null);
         Log.debug("Overview View Component Inventory Name: " + overviewViewComponent.inventoryName);
         viewComponentList.add(overviewViewComponent);
     }
 
     protected String inventoryName;
+    private Trader trader;
 
-    public Inventory getInventory(Trader trader) {
+    public ViewComponent(Trader trader) {
+        this.trader = trader;
+    }
+
+    public Inventory getInventory() {
         return null;
     }
 
-    public Inventory getFilledInventory(Trader trader) {
-        Inventory inventory = getInventory(trader);
+    public Inventory getFilledInventory() {
+        Inventory inventory = getInventory();
 
         for (int i = 0; i < inventory.getContents().length; i++) {
             if (inventory.getItem(i) == null) {
@@ -47,6 +53,10 @@ public class ViewComponent {
         }
 
         return inventory;
+    }
+
+    public Trader getTrader() {
+        return trader;
     }
 
     public String getInventoryName() {
