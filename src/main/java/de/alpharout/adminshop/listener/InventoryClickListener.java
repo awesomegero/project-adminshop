@@ -3,6 +3,7 @@ package de.alpharout.adminshop.listener;
 import de.alpharout.adminshop.api.gui.ItemComponent;
 import de.alpharout.adminshop.api.gui.ViewComponent;
 import de.alpharout.adminshop.utils.Log;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -23,6 +24,12 @@ public class InventoryClickListener implements Listener {
             Log.debug("Clicked on gui inventory.");
         } catch (NoSuchElementException nsee) {
             Log.debug("Clicked on not-gui inventory.");
+            return;
+        }
+
+        if (clickEvent.getCurrentItem().getType() == Material.BLACK_STAINED_GLASS_PANE
+        && clickEvent.getCurrentItem().getItemMeta().getDisplayName().equals(" ")) {
+            clickEvent.setCancelled(true);
             return;
         }
 
