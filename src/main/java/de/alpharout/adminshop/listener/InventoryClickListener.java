@@ -1,11 +1,13 @@
 package de.alpharout.adminshop.listener;
 
+import de.alpharout.adminshop.api.Product;
 import de.alpharout.adminshop.api.Trader;
 import de.alpharout.adminshop.api.gui.ItemComponent;
 import de.alpharout.adminshop.api.gui.ViewComponent;
 import de.alpharout.adminshop.utils.Log;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -23,7 +25,7 @@ public class InventoryClickListener implements Listener {
         int page;
         if (clickEvent.getView().getTitle().contains(" - ")) {
             traderName = clickEvent.getView().getTitle().split(" - ")[0];
-            page = Integer.parseInt(clickEvent.getView().getTitle().split(" - ")[1]);
+            page = Integer.parseInt(clickEvent.getView().getTitle().split(" - ")[1]) - 1;
         } else {
             traderName = clickEvent.getView().getTitle();
         }
@@ -39,12 +41,7 @@ public class InventoryClickListener implements Listener {
         } catch (NoSuchElementException nsee) {
             return;
         }
-
-        if (clickEvent.getCurrentItem().getType() == Material.BLACK_STAINED_GLASS_PANE
-        && clickEvent.getCurrentItem().getItemMeta().getDisplayName().equals(" ")) {
-            clickEvent.setCancelled(true);
-            return;
-        }
+        clickEvent.setCancelled(true);
 
         // Check if clicked item is an ItemComponent
         // TODO: Filter only ItemComponents of the specific ViewComponent (?)
@@ -54,10 +51,21 @@ public class InventoryClickListener implements Listener {
         ItemComponent itemComponent;
         try {
             itemComponent = ItemComponent.getItemComponentList().stream().filter(byDisplayName).findFirst().get();
-        } catch (NoSuchElementException nsee) {
+            itemComponent.handleClick(clickEvent, trader);
             return;
+        } catch (NoSuchElementException nsee) {
+
         }
 
-        itemComponent.handleClick(clickEvent, trader);
+        Predicate<Product> byName = product ->
+                ChatColor.translateAlternateColorCodes('&', product.getDisplayName()).equals(clickEvent.getCurrentItem().getItemMeta().getDisplayName());
+        Product product;
+        try {
+            product = Product.getProductList().stream().filter(byName).findFirst().get();
+            // TODO: Check if clicker is player
+            product.processTransaction((Player) clickEvent.getWhoClicked());
+        } catch (NoSuchElementException nsee) {
+            Log.debug("No correct click handling could be executed!");
+        }
     }
 }
