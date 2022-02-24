@@ -69,7 +69,8 @@ public class DatabaseManager {
                             "MaterialAmount int(255)," +
                             "Price double(64, 10)," +
                             "TraderName varchar(255)," +
-                            "BuyLimit int(255)" +
+                            "BuyLimit int(255)," +
+                            "ProductType varchar(255)" +
                             ");"
             );
             traderTableStatement.executeUpdate();

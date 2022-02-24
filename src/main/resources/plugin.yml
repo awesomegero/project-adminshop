@@ -5,6 +5,8 @@ main: de.alpharout.adminshop.AdminShop
 
 softdepend:
   - Citizens
+  - HeadDB
+  - Vault
 
 commands:
   adminshop:

@@ -7,13 +7,27 @@ missing-trader-name-output: "&cYou didn't entered a trader name. Please use /adm
 created-trader-output: "&7You &acreated&7 a trader!"
 creating-trader-output: "&7Creating trader..."
 invalid-skin-url-output: "&cThe skin url you entered is invalid!"
+enter-product-limit-output: "&7Please enter the &climit of products&7 player can buy within a cycle."
+enter-product-price-output: "&7Please enter the &cprice &7of the product."
+enter-product-amount-output: "&7Please enter the &camount&7 of the product."
+enter-product-display-name-output: "&7Please enter the &cdisplay name&7 of the product."
 list-trader-output: "&7&l| &r&7List of &cTrader &7&l|"
 buy-component-material: "GOLD_NUGGET"
 buy-component-name: "&7» &aBuy Items"
 sell-component-material: NETHER_WART
 sell-component-name: "&7» &cSell Items"
 overview-view-component-name: "&7» &aOverview"
+next-page-head-id: 45
+next-page-display-name: "&7» &cNext page"
+previous-page-head-id: 42
+previous-page-display-name: "&7« &cPrevious page"
+clock-head-id: 10271
+clock-display-name: "&7Next reset: &c%reset_time%:00"
+product-item-lore:
+  - "&7Price: &c%price% Crowns&7/%item_name%"
+  - "&7Items left: &c%items_left%"
 help-command-output:
   - "&7&l| &r&7Overview of &cAdminshop &7&l|"
   - "&7 • /adminshop &chelp &7| Shows you this help."
+  - "&7 • /adminshop &clist &7| Shows all traders."
   - "&7 • /adminshop &ccreate &7<&cname&7> | Creates a trader."
