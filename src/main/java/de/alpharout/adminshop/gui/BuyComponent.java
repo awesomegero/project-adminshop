@@ -3,6 +3,7 @@ package de.alpharout.adminshop.gui;
 import de.alpharout.adminshop.AdminShop;
 import de.alpharout.adminshop.api.Trader;
 import de.alpharout.adminshop.api.gui.ItemComponent;
+import de.alpharout.adminshop.api.gui.ViewComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -35,6 +36,6 @@ public class BuyComponent extends ItemComponent {
         clickEvent.setCancelled(true);
 
         clickEvent.getWhoClicked().closeInventory();
-        clickEvent.getWhoClicked().openInventory(new BuyViewComponent(trader).getInventory(0));
+        clickEvent.getWhoClicked().openInventory(ViewComponent.getFilledInventory(new BuyViewComponent(trader).getInventory(0)));
     }
 }
