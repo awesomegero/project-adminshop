@@ -1,7 +1,6 @@
 package de.alpharout.adminshop.api;
 
 import de.alpharout.adminshop.AdminShop;
-import de.alpharout.adminshop.gui.OverviewViewComponent;
 import de.alpharout.adminshop.utils.Log;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -57,7 +56,8 @@ public class Trader {
     private final String displayName;
     private final SkinInformation skinInformation;
     private ArrayList<Product> productList;
-    private ArrayList<Product[]> productPages;
+    private ArrayList<Product[]> buyProductPages;
+    private ArrayList<Product[]> sellProductPages;
 
     public Trader(UUID npcUUID, String internalName, String displayName, SkinInformation skinInformation) {
         this.npcUUID = npcUUID;
@@ -65,7 +65,8 @@ public class Trader {
         this.displayName = displayName;
         this.skinInformation = skinInformation;
         this.productList = new ArrayList<>();
-        this.productPages = new ArrayList<>();
+        this.buyProductPages = new ArrayList<>();
+        this.sellProductPages = new ArrayList<>();
     }
 
     @Deprecated
@@ -112,19 +113,30 @@ public class Trader {
     }
 
     public void loadPages() {
-        ArrayList<Product> currentPage = new ArrayList<>();
+        ArrayList<Product> currentBuyPage = new ArrayList<>();
+        ArrayList<Product> currentSellPage = new ArrayList<>();
         Log.debug("Product list size: " + productList.size());
         for (Product product : productList) {
-            if (currentPage.size() > 15) {
-                Log.debug("Creating new page");
-                productPages.add(currentPage.toArray(new Product[0]));
-                currentPage = new ArrayList<>();
+            if (product.getProductType() == ProductType.BUY_PRODUCT) {
+                if (currentBuyPage.size() > 15) {
+                    Log.debug("Creating new page");
+                    buyProductPages.add(currentBuyPage.toArray(new Product[0]));
+                    currentBuyPage = new ArrayList<>();
+                }
+
+                currentBuyPage.add(product);
+            } else {
+                if (currentSellPage.size() > 15) {
+                    Log.debug("Creating new page");
+                    sellProductPages.add(currentSellPage.toArray(new Product[0]));
+                    currentSellPage = new ArrayList<>();
+                }
+
+                currentSellPage.add(product);
             }
-
-            currentPage.add(product);
         }
-
-        productPages.add(currentPage.toArray(new Product[0]));
+        sellProductPages.add(currentSellPage.toArray(new Product[0]));
+        buyProductPages.add(currentBuyPage.toArray(new Product[0]));
     }
 
     public String getDisplayName() {
@@ -143,8 +155,12 @@ public class Trader {
         return npcUUID;
     }
 
-    public ArrayList<Product[]> getProductPages() {
-        return productPages;
+    public ArrayList<Product[]> getBuyProductPages() {
+        return buyProductPages;
+    }
+
+    public ArrayList<Product[]> getSellProductPages() {
+        return sellProductPages;
     }
 
     public NPC getNpc() {
