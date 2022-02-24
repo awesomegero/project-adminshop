@@ -1,9 +1,11 @@
 package de.alpharout.adminshop;
 
+import de.alpharout.adminshop.api.ResetManager;
 import de.alpharout.adminshop.api.SubcommandManager;
 import de.alpharout.adminshop.api.gui.ItemComponent;
 import de.alpharout.adminshop.api.gui.ViewComponent;
 import de.alpharout.adminshop.commands.AdminshopCommand;
+import de.alpharout.adminshop.commands.sub.AddSubcommand;
 import de.alpharout.adminshop.commands.sub.CreateSubcommand;
 import de.alpharout.adminshop.commands.sub.HelpSubcommand;
 import de.alpharout.adminshop.commands.sub.ListSubcommand;
@@ -23,6 +25,7 @@ public class AdminShop extends JavaPlugin {
     private static ConfigManager configManager;
     private static SubcommandManager subcommandManager;
     private static DatabaseManager databaseManager;
+    private static ResetManager resetManager;
 
     @Override
     public void onEnable() {
@@ -53,12 +56,23 @@ public class AdminShop extends JavaPlugin {
         subcommandManager.registerSubcommand("help", new HelpSubcommand());
         subcommandManager.registerSubcommand("create", new CreateSubcommand());
         subcommandManager.registerSubcommand("list", new ListSubcommand());
+        subcommandManager.registerSubcommand("add", new AddSubcommand());
 
         // Check for Citizens
         // TODO: Relocate code to other file
         PluginManager pluginManager = Bukkit.getServer().getPluginManager();
         if (!pluginManager.isPluginEnabled("Citizens")) {
             Log.critical("Citizens is not enabled on this server!");
+            pluginManager.disablePlugin(this);
+            return;
+        }
+        if (!pluginManager.isPluginEnabled("HeadDB")) {
+            Log.critical("HeadDB is not enabled on this server!");
+            pluginManager.disablePlugin(this);
+            return;
+        }
+        if (!pluginManager.isPluginEnabled("Vault")) {
+            Log.critical("Vault is not enabled on this server!");
             pluginManager.disablePlugin(this);
             return;
         }
@@ -71,6 +85,9 @@ public class AdminShop extends JavaPlugin {
 
         ViewComponent.addStandardViewComponents();
         Log.debug("Added standard view components.");
+
+        resetManager = new ResetManager();
+        resetManager.initTimer();
 
         Log.debug("Enabled Adminshop.");
     }
@@ -89,6 +106,10 @@ public class AdminShop extends JavaPlugin {
 
     public static SubcommandManager getSubcommandManager() {
         return subcommandManager;
+    }
+
+    public static ResetManager getResetManager() {
+        return resetManager;
     }
 
     public static boolean isDebugMode() {
