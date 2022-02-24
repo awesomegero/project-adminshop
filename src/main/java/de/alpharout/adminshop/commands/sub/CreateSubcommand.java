@@ -11,6 +11,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCDataStore;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.npc.CitizensNPCRegistry;
+import net.citizensnpcs.trait.LookClose;
 import net.citizensnpcs.trait.SkinTrait;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -111,7 +112,8 @@ public class CreateSubcommand implements Subcommand {
 
         ConversationFactory conversationFactory = new ConversationFactory(AdminShop.getInstance())
                 .withLocalEcho(false)
-                .withFirstPrompt(displayNamePrompt);
+                .withFirstPrompt(displayNamePrompt)
+                .withEscapeSequence("/quit");
         conversationFactory.buildConversation(player).begin();
         return true;
     }
@@ -149,6 +151,7 @@ public class CreateSubcommand implements Subcommand {
                                 skinInformation.getTextureSignature(),
                                 skinInformation.getTextureValue()
                         );
+                        npc.getOrAddTrait(LookClose.class).lookClose(true);
                         npc.spawn(player.getLocation());
                     }
                 });
