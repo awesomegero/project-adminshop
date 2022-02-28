@@ -62,7 +62,7 @@ public class AddSubcommand implements Subcommand {
             return true;
         }
 
-        ItemStack itemInHand = player.getInventory().getItemInMainHand();
+        ItemStack itemInHand = player.getInventory().getItemInMainHand().clone();
         if (itemInHand.getType() == Material.AIR) {
             player.sendMessage("§cPlease put the item you want to sell in your main hand.");
             return true;
@@ -171,6 +171,8 @@ public class AddSubcommand implements Subcommand {
                 trader
         );
         Product.addProductToList(product);
+        trader.addProduct(product);
+        trader.loadPages();
 
         Bukkit.getScheduler().runTaskAsynchronously(AdminShop.getInstance(), new Runnable() {
             @Override
