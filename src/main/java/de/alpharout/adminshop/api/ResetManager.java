@@ -18,7 +18,8 @@ public class ResetManager {
         Date date = new Date();
 
         nextReset = date.getHours() + 1;
-        while ((nextReset % 3) != 0) {
+        int resetInterval = AdminShop.getInstance().getConfig().getInt("cooldown-timer");
+        while ((nextReset % resetInterval) != 0) {
             nextReset++;
             if (nextReset > 24) nextReset = 0;
         }
