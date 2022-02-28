@@ -11,9 +11,13 @@ enter-product-limit-output: "&7Please enter the &climit of products&7 player can
 enter-product-price-output: "&7Please enter the &cprice &7of the product."
 enter-product-amount-output: "&7Please enter the &camount&7 of the product."
 enter-product-display-name-output: "&7Please enter the &cdisplay name&7 of the product."
+enter-product-internal-name-output: "&7Please enter the &cinternal name&7 of the product."
 list-trader-output: "&7&l| &r&7List of &cTrader &7&l|"
 buy-component-material: "GOLD_NUGGET"
 buy-component-name: "&7» &aBuy Items"
+buy-inv-name: "Buy"
+sell-inv-name: "Sell"
+no-products-component-name: "&7» &cNo items left!"
 sell-component-material: NETHER_WART
 sell-component-name: "&7» &cSell Items"
 overview-view-component-name: "&7» &aOverview"
@@ -23,11 +27,14 @@ previous-page-head-id: 42
 previous-page-display-name: "&7« &cPrevious page"
 clock-head-id: 10271
 clock-display-name: "&7Next reset: &c%reset_time%:00"
+return-component-material: "ARROW"
+return-component-name: "&7» &cReturn"
 product-item-lore:
   - "&7Price: &c%price% Crowns&7/%item_name%"
   - "&7Items left: &c%items_left%"
 help-command-output:
-  - "&7&l| &r&7Overview of &cAdminshop &7&l|"
+  - "&7| &r&7Overview of &cAdminshop &7|"
   - "&7 • /adminshop &chelp &7| Shows you this help."
   - "&7 • /adminshop &clist &7| Shows all traders."
   - "&7 • /adminshop &ccreate &7<&cname&7> | Creates a trader."
+  - "&7 • /adminshop &cadd &7<&ctrader&7> <&cbuy&7/&csell&7> <&cname&7> | Adds the currently selected item to a trader."

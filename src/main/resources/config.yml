@@ -1,1 +1,2 @@
 debug-mode: true
+cooldown-timer: 3 # Time unit: hours
