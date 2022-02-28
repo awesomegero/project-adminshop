@@ -20,30 +20,37 @@ public class DatabaseManager {
     }
 
     public void loadDatabase() {
-        String jdbcUrl =
-                "jdbc:mysql://" +
-                AdminShop.getConfigManager().getDatabaseConf().getString("db.hostname") +
-                ":" + AdminShop.getConfigManager().getDatabaseConf().getInt("db.port") +
-                "/" + AdminShop.getConfigManager().getDatabaseConf().getString("db.database");
-        String username = AdminShop.getConfigManager().getDatabaseConf().getString("db.username");
-        String password = AdminShop.getConfigManager().getDatabaseConf().getString("db.password");
-
-        hikariConfig.setJdbcUrl(jdbcUrl);
-        hikariConfig.setUsername(username);
-        hikariConfig.setPassword(password);
-        hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
-
-        // TODO: Inform about most efficient properties
-        hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
-        hikariConfig.addDataSourceProperty("prepStmtCacheSize", 250);
-        hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-
-        // TODO: Improve error handling
         try {
-            hikariDataSource = new HikariDataSource(hikariConfig);
-            setupDatabase();
-        } catch (HikariPool.PoolInitializationException exception ) {
-            Log.error("Error connecting to database!");
+            String jdbcUrl =
+                    "jdbc:mysql://" +
+                            AdminShop.getConfigManager().getDatabaseConf().getString("db.hostname") +
+                            ":" + AdminShop.getConfigManager().getDatabaseConf().getInt("db.port") +
+                            "/" + AdminShop.getConfigManager().getDatabaseConf().getString("db.database");
+            String username = AdminShop.getConfigManager().getDatabaseConf().getString("db.username");
+            String password = AdminShop.getConfigManager().getDatabaseConf().getString("db.password");
+
+            hikariConfig.setJdbcUrl(jdbcUrl);
+            hikariConfig.setUsername(username);
+            hikariConfig.setPassword(password);
+            hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
+
+            // TODO: Inform about most efficient properties
+            hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
+            hikariConfig.addDataSourceProperty("prepStmtCacheSize", 250);
+            hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            hikariConfig.addDataSourceProperty("initializationFailTimeout", 0);
+
+            // TODO: Improve error handling
+            try {
+                hikariDataSource = new HikariDataSource(hikariConfig);
+                setupDatabase();
+            } catch (HikariPool.PoolInitializationException exception) {
+                Log.error("Error connecting to database!");
+            } catch (Exception e) {
+                Log.error("Error connecting to database!");
+            }
+        } catch (Exception e) {
+
         }
     }
 
