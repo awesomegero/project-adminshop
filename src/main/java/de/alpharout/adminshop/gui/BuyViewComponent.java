@@ -19,10 +19,15 @@ public class BuyViewComponent extends ViewComponent {
     }
 
     public Inventory getInventory(int page) {
+        String productTypeName = ChatColor.translateAlternateColorCodes(
+                '&',
+                AdminShop.getConfigManager().getMessagesConf().getString("buy-inv-name")
+        );
+
         String inventoryName = ChatColor.translateAlternateColorCodes(
                 '&',
                 getTrader().getDisplayName()
-        ) + " - " + (page + 1);
+        ) + " | " + productTypeName + " | " + (page + 1);
         Inventory inventory = Bukkit.createInventory(null, 6*9, inventoryName);
 
         int currentPosition = 11;
@@ -35,6 +40,9 @@ public class BuyViewComponent extends ViewComponent {
                 if (currentPosition == 25) currentPosition = 29;
             }
         }
+
+        inventory.setItem(45, new ReturnComponent().getItemStack());
+
         if (page > 0) {
             int previousHeadID = AdminShop.getConfigManager().getMessagesConf().getInt("previous-page-head-id");
             String displayName = ChatColor.translateAlternateColorCodes(
@@ -45,13 +53,14 @@ public class BuyViewComponent extends ViewComponent {
             ItemMeta itemMeta = previousItemStack.getItemMeta();
             itemMeta.setDisplayName(displayName);
             itemMeta.setLore(new ArrayList<>());
+            previousItemStack.setItemMeta(itemMeta);
             inventory.setItem(47, previousItemStack);
         }
 
 
         inventory.setItem(49, new ResetDisplayComponent().getItemStack());
 
-        if (getTrader().getBuyProductPages().size() > 1) {
+        if (page != (getTrader().getBuyProductPages().size() - 1)) {
             int nextHeadID = AdminShop.getConfigManager().getMessagesConf().getInt("next-page-head-id");
             String displayName = ChatColor.translateAlternateColorCodes(
                     '&',
@@ -61,6 +70,7 @@ public class BuyViewComponent extends ViewComponent {
             ItemMeta itemMeta = nextItemStack.getItemMeta();
             itemMeta.setDisplayName(displayName);
             itemMeta.setLore(new ArrayList<>());
+            nextItemStack.setItemMeta(itemMeta);
             inventory.setItem(51, nextItemStack);
         }
 
