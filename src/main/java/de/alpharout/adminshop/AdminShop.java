@@ -5,17 +5,16 @@ import de.alpharout.adminshop.api.SubcommandManager;
 import de.alpharout.adminshop.api.gui.ItemComponent;
 import de.alpharout.adminshop.api.gui.ViewComponent;
 import de.alpharout.adminshop.commands.AdminshopCommand;
-import de.alpharout.adminshop.commands.sub.AddSubcommand;
-import de.alpharout.adminshop.commands.sub.CreateSubcommand;
-import de.alpharout.adminshop.commands.sub.HelpSubcommand;
-import de.alpharout.adminshop.commands.sub.ListSubcommand;
+import de.alpharout.adminshop.commands.sub.*;
 import de.alpharout.adminshop.listener.InventoryClickListener;
 import de.alpharout.adminshop.listener.NPCRightClickListener;
 import de.alpharout.adminshop.utils.ConfigManager;
 import de.alpharout.adminshop.utils.DatabaseManager;
 import de.alpharout.adminshop.utils.Log;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class AdminShop extends JavaPlugin {
@@ -26,6 +25,8 @@ public class AdminShop extends JavaPlugin {
     private static SubcommandManager subcommandManager;
     private static DatabaseManager databaseManager;
     private static ResetManager resetManager;
+
+    private static Economy economy;
 
     @Override
     public void onEnable() {
@@ -57,6 +58,10 @@ public class AdminShop extends JavaPlugin {
         subcommandManager.registerSubcommand("create", new CreateSubcommand());
         subcommandManager.registerSubcommand("list", new ListSubcommand());
         subcommandManager.registerSubcommand("add", new AddSubcommand());
+        subcommandManager.registerSubcommand("setnpc", new SetnpcSubcommand());
+        subcommandManager.registerSubcommand("removenpc", new RemovenpcSubcommand());
+        subcommandManager.registerSubcommand("remove", new RemoveSubcommand());
+        subcommandManager.registerSubcommand("edit", new EditSubcommand());
 
         // Check for Citizens
         // TODO: Relocate code to other file
@@ -89,7 +94,17 @@ public class AdminShop extends JavaPlugin {
         resetManager = new ResetManager();
         resetManager.initTimer();
 
+        setupEconomy();
+
         Log.debug("Enabled Adminshop.");
+    }
+
+    private void setupEconomy() {
+        RegisteredServiceProvider<Economy> registeredServiceProvider = getServer().getServicesManager().getRegistration(Economy.class);
+        if (registeredServiceProvider == null) {
+            Log.critical("Economy could not be initialized!");
+        }
+        economy = registeredServiceProvider.getProvider();
     }
 
     public static AdminShop getInstance() {
@@ -114,5 +129,9 @@ public class AdminShop extends JavaPlugin {
 
     public static boolean isDebugMode() {
         return debugMode;
+    }
+
+    public static Economy getEconomy() {
+        return economy;
     }
 }
