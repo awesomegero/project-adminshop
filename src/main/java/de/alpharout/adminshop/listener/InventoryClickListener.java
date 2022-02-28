@@ -1,9 +1,13 @@
 package de.alpharout.adminshop.listener;
 
+import de.alpharout.adminshop.AdminShop;
 import de.alpharout.adminshop.api.Product;
+import de.alpharout.adminshop.api.ProductType;
 import de.alpharout.adminshop.api.Trader;
 import de.alpharout.adminshop.api.gui.ItemComponent;
 import de.alpharout.adminshop.api.gui.ViewComponent;
+import de.alpharout.adminshop.gui.BuyViewComponent;
+import de.alpharout.adminshop.gui.SellViewComponent;
 import de.alpharout.adminshop.utils.Log;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -22,10 +26,29 @@ public class InventoryClickListener implements Listener {
 
         // Extract trader name and (if existing) page number from inventory name
         String traderName;
-        int page;
-        if (clickEvent.getView().getTitle().contains(" - ")) {
-            traderName = clickEvent.getView().getTitle().split(" - ")[0];
-            page = Integer.parseInt(clickEvent.getView().getTitle().split(" - ")[1]) - 1;
+        String productTypeName;
+        ProductType productType = null;
+        int page = 0;
+        if (clickEvent.getView().getTitle().contains(" | ")) {
+            String[] args = clickEvent.getView().getTitle().split(" \\| ");
+            traderName = args[0];
+            productTypeName = args[1];
+
+            String buyInvName = ChatColor.translateAlternateColorCodes(
+                    '&',
+                    AdminShop.getConfigManager().getMessagesConf().getString("buy-inv-name")
+            );
+            String sellInvName = ChatColor.translateAlternateColorCodes(
+                    '&',
+                    AdminShop.getConfigManager().getMessagesConf().getString("sell-inv-name")
+            );
+            if (productTypeName.equals(buyInvName)) {
+                productType = ProductType.BUY_PRODUCT;
+            } else if (productTypeName.equals(sellInvName)) {
+                productType = ProductType.SELL_PRODUCT;
+            }
+
+            page = Integer.parseInt(args[2]) - 1;
         } else {
             traderName = clickEvent.getView().getTitle();
         }
@@ -57,8 +80,10 @@ public class InventoryClickListener implements Listener {
 
         }
 
+        ProductType finalProductType = productType;
         Predicate<Product> byName = product ->
-                ChatColor.translateAlternateColorCodes('&', product.getDisplayName()).equals(clickEvent.getCurrentItem().getItemMeta().getDisplayName());
+                ChatColor.translateAlternateColorCodes('&', product.getDisplayName()).equals(clickEvent.getCurrentItem().getItemMeta().getDisplayName())
+                        && product.getProductType() == finalProductType;
         Product product;
         try {
             product = Product.getProductList().stream().filter(byName).findFirst().get();
@@ -66,6 +91,33 @@ public class InventoryClickListener implements Listener {
             product.processTransaction((Player) clickEvent.getWhoClicked());
         } catch (NoSuchElementException nsee) {
             Log.debug("No correct click handling could be executed!");
+        }
+
+        String nextPageDisplayName = ChatColor.translateAlternateColorCodes(
+                '&',
+                AdminShop.getConfigManager().getMessagesConf().getString("next-page-display-name")
+        );
+        String previousPageDisplayName = ChatColor.translateAlternateColorCodes(
+                '&',
+                AdminShop.getConfigManager().getMessagesConf().getString("previous-page-display-name")
+        );
+        if (clickEvent.getCurrentItem().getItemMeta().getDisplayName().equals(nextPageDisplayName)) {
+            clickEvent.getWhoClicked().closeInventory();
+            if (productType == ProductType.BUY_PRODUCT) {
+                clickEvent.getWhoClicked().openInventory(ViewComponent.getFilledInventory(new BuyViewComponent(trader).getInventory(page + 1)));
+            } else if (productType == ProductType.SELL_PRODUCT) {
+                clickEvent.getWhoClicked().openInventory(ViewComponent.getFilledInventory(new SellViewComponent(trader).getInventory(page + 1)));
+            }
+            return;
+        }
+        if (clickEvent.getCurrentItem().getItemMeta().getDisplayName().equals(previousPageDisplayName)) {
+            clickEvent.getWhoClicked().closeInventory();
+            if (productType == ProductType.BUY_PRODUCT) {
+                clickEvent.getWhoClicked().openInventory(ViewComponent.getFilledInventory(new BuyViewComponent(trader).getInventory(page - 1)));
+            } else if (productType == ProductType.SELL_PRODUCT) {
+                clickEvent.getWhoClicked().openInventory(ViewComponent.getFilledInventory(new SellViewComponent(trader).getInventory(page - 1)));
+            }
+            return;
         }
     }
 }

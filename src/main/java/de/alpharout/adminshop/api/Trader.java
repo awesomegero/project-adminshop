@@ -18,7 +18,7 @@ public class Trader {
      * Global class for accessing anything belonged to traders and their items.
      */
 
-    private static final ArrayList<Trader> traderList = new ArrayList<>();
+    private static ArrayList<Trader> traderList = new ArrayList<>();
 
     public static void loadTraderList() {
         try {
@@ -45,6 +45,10 @@ public class Trader {
 
     public static ArrayList<Trader> getTraderList() {
         return traderList;
+    }
+
+    public static void setTraderList(ArrayList<Trader> traderList) {
+        Trader.traderList = traderList;
     }
 
     public static void addTraderToList(Trader trader) {
@@ -115,10 +119,12 @@ public class Trader {
     public void loadPages() {
         ArrayList<Product> currentBuyPage = new ArrayList<>();
         ArrayList<Product> currentSellPage = new ArrayList<>();
+        buyProductPages.clear();
+        sellProductPages.clear();
         Log.debug("Product list size: " + productList.size());
         for (Product product : productList) {
             if (product.getProductType() == ProductType.BUY_PRODUCT) {
-                if (currentBuyPage.size() > 15) {
+                if (currentBuyPage.size() > 14) {
                     Log.debug("Creating new page");
                     buyProductPages.add(currentBuyPage.toArray(new Product[0]));
                     currentBuyPage = new ArrayList<>();
@@ -137,6 +143,28 @@ public class Trader {
         }
         sellProductPages.add(currentSellPage.toArray(new Product[0]));
         buyProductPages.add(currentBuyPage.toArray(new Product[0]));
+    }
+
+    public void remove() {
+        NPC npc = CitizensAPI.getNPCRegistry().getByUniqueIdGlobal(npcUUID);
+        Bukkit.getScheduler().runTask(AdminShop.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                npc.destroy();
+            }
+        });
+
+
+        try {
+            PreparedStatement preparedStatement = AdminShop.getDatabaseManager().getConnection().prepareStatement(
+                    "DELETE FROM adminshop_traders WHERE InternalName=?;"
+            );
+            preparedStatement.setString(1, internalName);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getDisplayName() {
@@ -165,5 +193,13 @@ public class Trader {
 
     public NPC getNpc() {
         return CitizensAPI.getNPCRegistry().getByUniqueId(npcUUID);
+    }
+
+    public ArrayList<Product> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(ArrayList<Product> productList) {
+        this.productList = productList;
     }
 }
