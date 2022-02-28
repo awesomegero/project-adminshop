@@ -6,6 +6,7 @@ import de.alpharout.adminshop.utils.Log;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
@@ -106,6 +108,7 @@ public class Product {
         return displayName;
     }
 
+    // Item displayed in the buy/sell menu
     public ItemStack getItemStack() {
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes(
@@ -115,7 +118,8 @@ public class Product {
         ArrayList<String> itemLore = ConfigHelper.getColoredList(AdminShop.getConfigManager().getMessagesConf(), "product-item-lore");
 
         for (int i = 0; i < itemLore.size(); i++) {
-            itemLore.set(i, StringUtils.replace(itemLore.get(i), "%price%", String.valueOf(price)));
+            DecimalFormat decimalFormat = new DecimalFormat("0.#");
+            itemLore.set(i, StringUtils.replace(itemLore.get(i), "%price%", decimalFormat.format(price)));
             itemLore.set(i, StringUtils.replace(itemLore.get(i), "%item_name%",
                     ChatColor.translateAlternateColorCodes(
                             '&',
@@ -125,6 +129,14 @@ public class Product {
         }
         itemMeta.setLore(itemLore);
         itemStack.setItemMeta(itemMeta);
+
+        return itemStack;
+    }
+
+    // Item added to the players inventory
+    public ItemStack getRawStack() {
+        ItemStack itemStack = new ItemStack(getItemStack().getType());
+        itemStack.setAmount(getItemStack().getAmount());
 
         return itemStack;
     }
@@ -177,11 +189,112 @@ public class Product {
         }
     }
 
+    public void updateDatabase() {
+        try {
+            PreparedStatement preparedStatement = AdminShop.getDatabaseManager().getConnection().prepareStatement(
+                    "UPDATE adminshop_products SET " +
+                            "Price = ?," +
+                            "MaterialAmount = ?," +
+                            "BuyLimit = ? " +
+                            "WHERE InternalName = ?;"
+            );
+
+            preparedStatement.setDouble(1, price);
+            preparedStatement.setInt(2, getItemStack().getAmount());
+            preparedStatement.setInt(3, buyLimit);
+            preparedStatement.setString(4, internalName);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setCurrentlySold(int currentlySold) {
         this.currentlySold = currentlySold;
     }
 
     public void processTransaction(Player player) {
         Log.debug("Processing " + internalName + " for " + player.getDisplayName());
+        if (getBuyLimit() - currentlySold == 0) {
+            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+            return;
+        }
+
+        if (getProductType() == ProductType.BUY_PRODUCT) {
+            if (!AdminShop.getEconomy().has(player, price)) {
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                return;
+            }
+            AdminShop.getEconomy().withdrawPlayer(player, price);
+            addSell();
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+            player.closeInventory();
+
+            addProductToInventory(player);
+            return;
+        }
+        if (getProductType() == ProductType.SELL_PRODUCT) {
+            if (player.getInventory().contains(getItemStack().getType(), getItemStack().getAmount())) {
+                player.getInventory().removeItem(getRawStack());
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+                player.closeInventory();
+                AdminShop.getEconomy().depositPlayer(player, price);
+                addSell();
+            } else {
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                return;
+            }
+        }
+    }
+
+    public boolean remove(Trader trader) {
+        Predicate<Product> byInternalName = product -> product.getInternalName().equals(internalName);
+        Product product;
+        try {
+            product = getProductList().stream().filter(byInternalName).findFirst().get();
+        } catch (NoSuchElementException nsee) {
+            return false;
+        }
+
+        productList.remove(product);
+        trader.getProductList().remove(product);
+        return true;
+    }
+
+    public void addProductToInventory(Player player) {
+        player.getInventory().addItem(getRawStack());
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setBuyLimit(int buyLimit) {
+        this.buyLimit = buyLimit;
+    }
+
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setInternalName(String internalName) {
+        this.internalName = internalName;
+    }
+
+    public void setItemSoldOut(boolean itemSoldOut) {
+        isItemSoldOut = itemSoldOut;
+    }
+
+    public void setItemStack(ItemStack itemStack) {
+        this.itemStack = itemStack;
+    }
+
+    public void setTrader(Trader trader) {
+        this.trader = trader;
     }
 }
