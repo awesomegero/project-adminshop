@@ -3,9 +3,9 @@ version: 0.0.1
 api-version: 1.17
 main: de.alpharout.adminshop.AdminShop
 
-softdepend:
+depend:
   - Citizens
-  - HeadDB
+  - HeadDatabase
   - Vault
 
 commands:

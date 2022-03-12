@@ -71,8 +71,8 @@ public class AdminShop extends JavaPlugin {
             pluginManager.disablePlugin(this);
             return;
         }
-        if (!pluginManager.isPluginEnabled("HeadDB")) {
-            Log.critical("HeadDB is not enabled on this server!");
+        if (!pluginManager.isPluginEnabled("HeadDatabase")) {
+            Log.critical("HeadDatabase is not enabled on this server!");
             pluginManager.disablePlugin(this);
             return;
         }

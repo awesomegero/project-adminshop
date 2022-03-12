@@ -2,15 +2,14 @@ package de.alpharout.adminshop.gui;
 
 import de.alpharout.adminshop.AdminShop;
 import de.alpharout.adminshop.api.Product;
-import de.alpharout.adminshop.api.ProductType;
 import de.alpharout.adminshop.api.Trader;
 import de.alpharout.adminshop.api.gui.ViewComponent;
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import tsp.headdb.api.HeadAPI;
 
 import java.util.ArrayList;
 
@@ -44,6 +43,7 @@ public class SellViewComponent extends ViewComponent {
         inventory.setItem(45, new ReturnComponent().getItemStack());
 
         inventory.setItem(49, new ResetDisplayComponent().getItemStack());
+        HeadDatabaseAPI headDatabaseAPI = new HeadDatabaseAPI();
 
         if (page > 0) {
             int previousHeadID = AdminShop.getConfigManager().getMessagesConf().getInt("previous-page-head-id");
@@ -51,7 +51,7 @@ public class SellViewComponent extends ViewComponent {
                     '&',
                     AdminShop.getConfigManager().getMessagesConf().getString("previous-page-display-name")
             );
-            ItemStack previousItemStack = HeadAPI.getHeadByID(previousHeadID).getMenuItem();
+            ItemStack previousItemStack = headDatabaseAPI.getItemHead(String.valueOf(previousHeadID));
             ItemMeta itemMeta = previousItemStack.getItemMeta();
             itemMeta.setDisplayName(displayName);
             itemMeta.setLore(new ArrayList<>());
@@ -65,7 +65,7 @@ public class SellViewComponent extends ViewComponent {
                     '&',
                     AdminShop.getConfigManager().getMessagesConf().getString("next-page-display-name")
             );
-            ItemStack nextItemStack = HeadAPI.getHeadByID(nextHeadID).getMenuItem();
+            ItemStack nextItemStack = headDatabaseAPI.getItemHead(String.valueOf(nextHeadID));
             ItemMeta itemMeta = nextItemStack.getItemMeta();
             itemMeta.setDisplayName(displayName);
             itemMeta.setLore(new ArrayList<>());
